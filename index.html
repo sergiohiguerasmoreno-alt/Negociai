@@ -1037,8 +1037,138 @@ textarea.chat-textarea::placeholder { color: var(--text3); font-style: italic; }
 .action-btn.secondary:hover { border-color: var(--green); color: var(--green); }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE MOBILE SIDEBAR
+   PAYWALL MODAL
 ═══════════════════════════════════════ */
+.paywall-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.paywall-overlay.visible { display: flex; }
+
+.paywall-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 40px 36px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 24px 80px rgba(0,0,0,.5);
+}
+
+.paywall-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), #5b9cf6);
+  border-radius: 16px 16px 0 0;
+}
+
+.paywall-emoji { font-size: 44px; margin-bottom: 16px; display: block; }
+
+.paywall-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 26px;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.paywall-sub {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.paywall-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.paywall-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text2);
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.paywall-feature .pf-icon { font-size: 16px; flex-shrink: 0; }
+
+.paywall-price {
+  margin-bottom: 20px;
+}
+.paywall-price .price-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1;
+}
+.paywall-price .price-period {
+  font-size: 14px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+.paywall-cta {
+  width: 100%;
+  padding: 16px;
+  background: var(--green);
+  color: #06140f;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 12px;
+  text-decoration: none;
+  display: block;
+}
+.paywall-cta:hover { background: #1af0b8; box-shadow: 0 6px 20px rgba(34,211,160,.3); }
+
+.paywall-dismiss {
+  font-size: 12px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+}
+.paywall-dismiss:hover { color: var(--text2); }
+
+.free-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--amber-dim);
+  border: 1px solid rgba(246,166,35,.25);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--amber);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-left: 8px;
+}
+
+
 .mobile-topbar {
   display: none;
   padding: 14px 20px;
@@ -1092,6 +1222,33 @@ textarea.chat-textarea::placeholder { color: var(--text3); font-style: italic; }
 </style>
 </head>
 <body>
+
+<!-- PAYWALL MODAL -->
+<div class="paywall-overlay" id="paywall-overlay">
+  <div class="paywall-card">
+    <span class="paywall-emoji">🔒</span>
+    <div class="paywall-title">Has usado tus 3 simulaciones gratuitas</div>
+    <div class="paywall-sub">Para seguir practicando y dominar cada negociación, activa tu plan Pro.</div>
+
+    <div class="paywall-features">
+      <div class="paywall-feature"><span class="pf-icon">♾️</span> Simulaciones ilimitadas</div>
+      <div class="paywall-feature"><span class="pf-icon">🎭</span> 6 escenarios completos</div>
+      <div class="paywall-feature"><span class="pf-icon">📊</span> Análisis y puntuación detallada</div>
+      <div class="paywall-feature"><span class="pf-icon">☁️</span> Progreso guardado en la nube</div>
+      <div class="paywall-feature"><span class="pf-icon">🧠</span> Coach IA en tiempo real</div>
+    </div>
+
+    <div class="paywall-price">
+      <div class="price-val">14€</div>
+      <div class="price-period">al mes · cancela cuando quieras</div>
+    </div>
+
+    <a class="paywall-cta" href="https://buy.stripe.com/9B600kf2222Egss0zl7IY01" target="_blank">
+      ⚡ Activar Negocia.AI Pro
+    </a>
+    <button class="paywall-dismiss" onclick="closePaywall()">Ahora no, volver al inicio</button>
+  </div>
+</div>
 
 <!-- LOADING OVERLAY -->
 <div id="loading-overlay" style="
@@ -1203,6 +1360,7 @@ textarea.chat-textarea::placeholder { color: var(--text3); font-style: italic; }
     </div>
     <div class="topbar-right">
       <div class="streak-pill" id="streak-pill">🔥 <span id="streak-val">0</span> días</div>
+      <span class="free-counter" id="free-counter">3 gratis restantes</span>
       <button class="btn-outline" onclick="showScreen('setup')">+ Nueva simulación</button>
     </div>
   </div>
@@ -1213,9 +1371,61 @@ textarea.chat-textarea::placeholder { color: var(--text3); font-style: italic; }
       <div class="hero-eyebrow">// simulador de negociación con ia</div>
       <h1 class="hero-title">Practica antes de <em>jugártela</em><br>de verdad.</h1>
       <p class="hero-sub">Un coach de negociación cuesta 300€/hora. Aquí entrenas con una IA que actúa como tu jefe, cliente o recruiter — y te dice exactamente qué estás haciendo mal, en tiempo real.</p>
-      <button class="btn-primary" onclick="showScreen('setup')">
-        🎭 Empezar simulación <span style="opacity:.6; font-weight:400;">→</span>
-      </button>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn-primary" onclick="showScreen('setup')">
+          🎭 Empezar simulación <span style="opacity:.6; font-weight:400;">→</span>
+        </button>
+        <a href="https://buy.stripe.com/9B600kf2222Egss0zl7IY01" target="_blank"
+          style="display:inline-flex; align-items:center; gap:8px; padding:13px 24px;
+          background:transparent; border:1.5px solid var(--green); color:var(--green);
+          border-radius:var(--r); font-family:'Outfit',sans-serif; font-size:14px;
+          font-weight:700; cursor:pointer; text-decoration:none; transition:all 0.2s;"
+          onmouseover="this.style.background='var(--green-dim)'"
+          onmouseout="this.style.background='transparent'">
+          ⚡ Activar Pro — 14€/mes
+        </a>
+      </div>
+    </div>
+
+    <!-- PRO BANNER (shown only to free users) -->
+    <div id="pro-banner" style="
+      background: linear-gradient(135deg, #0f1e1a, #0e1219);
+      border: 1px solid rgba(34,211,160,.3);
+      border-radius: 12px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div style="font-size:32px;">🏆</div>
+        <div>
+          <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom:4px;">
+            Negocia.AI Pro — Simulaciones ilimitadas
+          </div>
+          <div style="font-size:13px; color:var(--text2);">
+            Acceso a los 6 escenarios · Coach en tiempo real · Progreso guardado
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:16px; flex-shrink:0;">
+        <div style="text-align:right;">
+          <div style="font-family:'Outfit',sans-serif; font-size:26px; font-weight:900; color:var(--green); line-height:1;">14€</div>
+          <div style="font-size:11px; color:var(--text2);">al mes</div>
+        </div>
+        <a href="https://buy.stripe.com/9B600kf2222Egss0zl7IY01" target="_blank" style="
+          display:inline-flex; align-items:center; gap:6px;
+          padding:12px 22px;
+          background:var(--green); color:#06140f;
+          border-radius:var(--r); font-family:'Outfit',sans-serif;
+          font-size:14px; font-weight:800; text-decoration:none;
+          transition:all 0.2s; white-space:nowrap;"
+          onmouseover="this.style.background='#1af0b8'"
+          onmouseout="this.style.background='var(--green)'">
+          Suscribirme ahora →
+        </a>
+      </div>
     </div>
 
     <div class="metrics-grid">
@@ -1440,6 +1650,9 @@ textarea.chat-textarea::placeholder { color: var(--text3); font-style: italic; }
 /* ═════════════════════════════════
    DATA
 ═════════════════════════════════ */
+const STRIPE_URL = 'https://buy.stripe.com/9B600kf2222Egss0zl7IY01';
+const FREE_LIMIT = 3;
+
 const SCENARIOS = {
   salary:    { emoji:'💰', title:'Pedir un aumento', desc:'Negocia una subida salarial con tu jefe directo. El escenario más común — y el más costoso si lo haces mal.', persona:'👔', oppName:'Carlos Ruiz', oppRole:'Tu jefe directo · Director de Producto', tactics:['Ancla con una cifra alta primero','Justifica con datos del mercado','Presenta logros concretos con impacto'], qr:['Tengo datos del mercado que apoyan mi petición','¿Qué necesitaría demostrar para conseguirlo?','Mi contribución al equipo ha sido...'] },
   offer:     { emoji:'📋', title:'Negociar una oferta', desc:'Contraoferta a una nueva empresa. Tienes poder — úsalo antes de firmar.', persona:'👩‍💼', oppName:'Laura Gómez', oppRole:'Responsable de RRHH · Tech Corp', tactics:['Agradece antes de negociar','Negocia el paquete completo, no solo salario','Usa el silencio a tu favor'], qr:['Estoy muy interesado/a, aunque me gustaría revisar...','¿Hay flexibilidad en el paquete de beneficios?','¿Cuál es el proceso a partir de aquí?'] },
@@ -1472,6 +1685,7 @@ let state = {
   xp: 0,
   streak: 0,
   lastDate: '',
+  isPro: false,
 };
 
 /* ═════════════════════════════════
@@ -1484,6 +1698,7 @@ async function saveProgress() {
       xp: state.xp,
       streak: state.streak,
       lastDate: state.lastDate,
+      isPro: state.isPro,
     }));
     // Flash sync badge
     const badge = document.getElementById('sync-badge');
@@ -1502,6 +1717,7 @@ async function loadProgress() {
       state.xp       = data.xp      || 0;
       state.streak   = data.streak  || 0;
       state.lastDate = data.lastDate || '';
+      state.isPro    = data.isPro   || false;
     }
   } catch(e) { /* key doesn't exist yet, first time user */ }
 }
@@ -1519,6 +1735,7 @@ async function loadProgress() {
   renderSetupOptions();
   updateSidebar();
   updateDashboardMetrics();
+  updateFreeCounter();
   renderHistory();
   checkStreak();
 })();
@@ -1687,6 +1904,12 @@ function quickStart(scId) {
    START SIMULATION
 ═════════════════════════════════ */
 async function startSimulation() {
+  // Paywall check
+  if (!state.isPro && state.sessions.length >= FREE_LIMIT) {
+    showPaywall();
+    return;
+  }
+
   const sc = SCENARIOS[state.scenario];
   state.context = document.getElementById('context-input').value.trim();
   state.history = [];
@@ -1896,6 +2119,7 @@ function showResults(data) {
 
   updateSidebar();
   updateDashboardMetrics();
+  updateFreeCounter();
   renderHistory();
   renderScenariosGrid();
   showScreen('results');
@@ -1904,6 +2128,33 @@ function showResults(data) {
 function animateScore(numId, barId, val) {
   document.getElementById(numId).textContent = val+'%';
   setTimeout(()=>{ document.getElementById(barId).style.width = val+'%'; }, 100);
+}
+
+function showPaywall() {
+  document.getElementById('paywall-overlay').classList.add('visible');
+}
+
+function closePaywall() {
+  document.getElementById('paywall-overlay').classList.remove('visible');
+  showScreen('dashboard');
+}
+
+function updateFreeCounter() {
+  const counter = document.getElementById('free-counter');
+  const banner = document.getElementById('pro-banner');
+  if (!counter) return;
+  if (state.isPro) {
+    counter.style.display = 'none';
+    if (banner) banner.style.display = 'none';
+    return;
+  }
+  if (banner) banner.style.display = 'flex';
+  const used = state.sessions.length;
+  const remaining = Math.max(0, FREE_LIMIT - used);
+  counter.textContent = remaining > 0 ? `${remaining} gratis restante${remaining===1?'':'s'}` : '0 gratuitas';
+  counter.style.background = remaining === 0 ? 'rgba(242,87,87,.1)' : 'var(--amber-dim)';
+  counter.style.borderColor = remaining === 0 ? 'rgba(242,87,87,.25)' : 'rgba(246,166,35,.25)';
+  counter.style.color = remaining === 0 ? 'var(--red)' : 'var(--amber)';
 }
 
 function retryScenario() {
